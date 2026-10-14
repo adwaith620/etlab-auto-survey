@@ -10,9 +10,9 @@ export const RATING_MODES = {
   POOR: 'poor',
   VERY_POOR: 'very_poor',
   RANDOM: 'random',
-};
+}
 
-export const DEFAULT_RATING_MODE = RATING_MODES.EXCELLENT;
+export const DEFAULT_RATING_MODE = RATING_MODES.EXCELLENT
 
 export const RATING_LABELS = {
   [RATING_MODES.EXCELLENT]: 'Excellent',
@@ -22,7 +22,7 @@ export const RATING_LABELS = {
   [RATING_MODES.POOR]: 'Poor',
   [RATING_MODES.VERY_POOR]: 'Very Poor',
   [RATING_MODES.RANDOM]: 'Random',
-};
+}
 
 export const STATUS_CODES = {
   IDLE: 'IDLE',
@@ -37,7 +37,7 @@ export const STATUS_CODES = {
   SUBMIT_BUTTON_NOT_FOUND: 'SUBMIT_BUTTON_NOT_FOUND',
   UNKNOWN_RESULT: 'UNKNOWN_RESULT',
   ERROR: 'ERROR',
-};
+}
 
 export const STATUS_MESSAGES = {
   [STATUS_CODES.IDLE]: '',
@@ -52,7 +52,7 @@ export const STATUS_MESSAGES = {
   [STATUS_CODES.SUBMIT_BUTTON_NOT_FOUND]: 'Survey Submit button could not be identified safely.',
   [STATUS_CODES.UNKNOWN_RESULT]: 'Survey submitted, but confirmation could not be verified.',
   [STATUS_CODES.ERROR]: 'An unexpected error occurred.',
-};
+}
 
 /**
  * Semantic synonyms for rating scales across various institutional Etlab surveys.
@@ -132,6 +132,6 @@ export const RATING_SYNONYMS = {
     'extremely poor',
     '1',
   ],
-};
+}
 
-export const STORAGE_KEY_SELECTED_MODE = 'etlab_selected_rating_mode';
+export const STORAGE_KEY_SELECTED_MODE = 'etlab_selected_rating_mode'

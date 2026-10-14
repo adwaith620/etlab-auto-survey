@@ -22,7 +22,7 @@
     "build:all": "node scripts/build.js all",
     "preview": "vite preview",
     "test": "vitest run",
-    "fmt": "prettier --write '**/*.{jsx,js,json,css,scss,md}'"
+    "fmt": "prettier --write \"**/*.{jsx,js,json,css,scss,md}\""
   },
   "dependencies": {
     "react": "^18.2.0",

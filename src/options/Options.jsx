@@ -1,24 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { RATING_MODES, RATING_LABELS, DEFAULT_RATING_MODE } from '../core/constants.js';
-import { getSelectedRatingMode, setSelectedRatingMode } from '../common/storage.js';
+import React, { useEffect, useState } from 'react'
+import { RATING_MODES, RATING_LABELS, DEFAULT_RATING_MODE } from '../core/constants.js'
+import { getSelectedRatingMode, setSelectedRatingMode } from '../common/storage.js'
 
 export default function Options() {
-  const [defaultMode, setDefaultMode] = useState(DEFAULT_RATING_MODE);
-  const [saved, setSaved] = useState(false);
+  const [defaultMode, setDefaultMode] = useState(DEFAULT_RATING_MODE)
+  const [saved, setSaved] = useState(false)
 
   useEffect(() => {
-    getSelectedRatingMode().then(mode => {
-      if (mode) setDefaultMode(mode);
-    });
-  }, []);
+    getSelectedRatingMode().then((mode) => {
+      if (mode) setDefaultMode(mode)
+    })
+  }, [])
 
-  const handleChange = async e => {
-    const newMode = e.target.value;
-    setDefaultMode(newMode);
-    await setSelectedRatingMode(newMode);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
-  };
+  const handleChange = async (e) => {
+    const newMode = e.target.value
+    setDefaultMode(newMode)
+    await setSelectedRatingMode(newMode)
+    setSaved(true)
+    setTimeout(() => setSaved(false), 2000)
+  }
 
   return (
     <div style={{ padding: '24px', fontFamily: 'sans-serif', maxWidth: '500px', margin: '0 auto' }}>
@@ -46,5 +46,5 @@ export default function Options() {
         </p>
       )}
     </div>
-  );
+  )
 }

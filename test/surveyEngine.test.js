@@ -1,31 +1,31 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest'
 import {
   isEtlabSurveyPage,
   detectSurveyQuestions,
   handleSurveyTextarea,
   executeSurveyWorkflow,
-} from '../src/core/surveyEngine.js';
-import { resetSubmittingState } from '../src/core/submitter.js';
-import { RATING_MODES, STATUS_CODES } from '../src/core/constants.js';
+} from '../src/core/surveyEngine.js'
+import { resetSubmittingState } from '../src/core/submitter.js'
+import { RATING_MODES, STATUS_CODES } from '../src/core/constants.js'
 
 describe('surveyEngine - isEtlabSurveyPage', () => {
   it('returns true for Etlab survey and feedback URLs', () => {
-    expect(isEtlabSurveyPage('https://cet.etlab.in/survey/user/answer?id=45')).toBe(true);
-    expect(isEtlabSurveyPage('http://rit.etlab.in/survey/fill/12')).toBe(true);
-    expect(isEtlabSurveyPage('https://gecw.etlab.in/feedback/faculty')).toBe(true);
-  });
+    expect(isEtlabSurveyPage('https://cet.etlab.in/survey/user/answer?id=45')).toBe(true)
+    expect(isEtlabSurveyPage('http://rit.etlab.in/survey/fill/12')).toBe(true)
+    expect(isEtlabSurveyPage('https://gecw.etlab.in/feedback/faculty')).toBe(true)
+  })
 
   it('returns false for non-Etlab or unrelated URLs', () => {
-    expect(isEtlabSurveyPage('https://google.com')).toBe(false);
-    expect(isEtlabSurveyPage('https://example.com/survey/user/answer')).toBe(false);
-    expect(isEtlabSurveyPage('https://cet.etlab.in/student/attendance')).toBe(false);
-  });
-});
+    expect(isEtlabSurveyPage('https://google.com')).toBe(false)
+    expect(isEtlabSurveyPage('https://example.com/survey/user/answer')).toBe(false)
+    expect(isEtlabSurveyPage('https://cet.etlab.in/student/attendance')).toBe(false)
+  })
+})
 
 describe('surveyEngine - Question Detection and Textarea handling', () => {
   beforeEach(() => {
-    document.body.innerHTML = '';
-  });
+    document.body.innerHTML = ''
+  })
 
   it('detects list items with questions, radios, and selects', () => {
     document.body.innerHTML = `
@@ -54,34 +54,34 @@ describe('surveyEngine - Question Detection and Textarea handling', () => {
           </li>
         </ul>
       </form>
-    `;
+    `
 
-    const questions = detectSurveyQuestions(document);
-    expect(questions.length).toBe(2);
-    expect(questions[0].type).toBe('radio');
-    expect(questions[0].options.length).toBe(5);
-    expect(questions[1].type).toBe('select');
-    expect(questions[1].options.length).toBe(3);
-  });
+    const questions = detectSurveyQuestions(document)
+    expect(questions.length).toBe(2)
+    expect(questions[0].type).toBe('radio')
+    expect(questions[0].options.length).toBe(5)
+    expect(questions[1].type).toBe('select')
+    expect(questions[1].options.length).toBe(3)
+  })
 
   it('fills textareas with appropriate responses for age and observation questions', () => {
-    const ageTextarea = document.createElement('textarea');
-    handleSurveyTextarea(ageTextarea, 'Enter your age in years');
-    const ageVal = parseInt(ageTextarea.value, 10);
-    expect(ageVal).toBeGreaterThanOrEqual(20);
-    expect(ageVal).toBeLessThanOrEqual(25);
+    const ageTextarea = document.createElement('textarea')
+    handleSurveyTextarea(ageTextarea, 'Enter your age in years')
+    const ageVal = parseInt(ageTextarea.value, 10)
+    expect(ageVal).toBeGreaterThanOrEqual(20)
+    expect(ageVal).toBeLessThanOrEqual(25)
 
-    const obsTextarea = document.createElement('textarea');
-    handleSurveyTextarea(obsTextarea, 'Any observation or suggestions for improvement?');
-    expect(obsTextarea.value).toBe('Nothing');
-  });
-});
+    const obsTextarea = document.createElement('textarea')
+    handleSurveyTextarea(obsTextarea, 'Any observation or suggestions for improvement?')
+    expect(obsTextarea.value).toBe('Nothing')
+  })
+})
 
 describe('surveyEngine - Full workflow and safeguards', () => {
   beforeEach(() => {
-    resetSubmittingState();
-    document.body.innerHTML = '';
-  });
+    resetSubmittingState()
+    document.body.innerHTML = ''
+  })
 
   function setupSampleEtlabDOM() {
     document.body.innerHTML = `
@@ -118,44 +118,44 @@ describe('surveyEngine - Full workflow and safeguards', () => {
         </ul>
         <button type="button" name="submitButton">Submit Survey</button>
       </form>
-    `;
+    `
   }
 
   it('successfully selects answers for Excellent and submits survey automatically', async () => {
-    setupSampleEtlabDOM();
+    setupSampleEtlabDOM()
 
-    let submitted = false;
-    const submitBtn = document.querySelector('button[name="submitButton"]');
+    let submitted = false
+    const submitBtn = document.querySelector('button[name="submitButton"]')
     submitBtn.addEventListener('click', () => {
-      submitted = true;
-    });
+      submitted = true
+    })
 
-    const result = await executeSurveyWorkflow(RATING_MODES.EXCELLENT, document);
+    const result = await executeSurveyWorkflow(RATING_MODES.EXCELLENT, document)
 
-    expect(result.success).toBe(true);
-    expect(result.statusCode).toBe(STATUS_CODES.SUCCESS);
-    expect(submitted).toBe(true);
+    expect(result.success).toBe(true)
+    expect(result.statusCode).toBe(STATUS_CODES.SUCCESS)
+    expect(submitted).toBe(true)
 
-    const q1Radio = document.querySelector('input[name="q1"][value="5"]');
-    const q2Radio = document.querySelector('input[name="q2"][value="5"]');
-    expect(q1Radio.checked).toBe(true);
-    expect(q2Radio.checked).toBe(true);
+    const q1Radio = document.querySelector('input[name="q1"][value="5"]')
+    const q2Radio = document.querySelector('input[name="q2"][value="5"]')
+    expect(q1Radio.checked).toBe(true)
+    expect(q2Radio.checked).toBe(true)
 
-    const remarks = document.querySelector('textarea[name="remarks"]');
-    expect(remarks.value).toBe('Nothing');
-  });
+    const remarks = document.querySelector('textarea[name="remarks"]')
+    expect(remarks.value).toBe('Nothing')
+  })
 
   it('successfully selects answers for Poor and submits survey', async () => {
-    setupSampleEtlabDOM();
+    setupSampleEtlabDOM()
 
-    const result = await executeSurveyWorkflow(RATING_MODES.POOR, document);
+    const result = await executeSurveyWorkflow(RATING_MODES.POOR, document)
 
-    expect(result.success).toBe(true);
-    expect(result.statusCode).toBe(STATUS_CODES.SUCCESS);
+    expect(result.success).toBe(true)
+    expect(result.statusCode).toBe(STATUS_CODES.SUCCESS)
 
-    const q1Radio = document.querySelector('input[name="q1"][value="1"]');
-    expect(q1Radio.checked).toBe(true);
-  });
+    const q1Radio = document.querySelector('input[name="q1"][value="1"]')
+    expect(q1Radio.checked).toBe(true)
+  })
 
   it('safeguard: prevents submission if any question cannot be mapped reliably', async () => {
     // Missing 'Very Poor' option in this survey scale
@@ -173,20 +173,20 @@ describe('surveyEngine - Full workflow and safeguards', () => {
         </ul>
         <button type="button" name="submitButton">Submit</button>
       </form>
-    `;
+    `
 
-    let submitted = false;
+    let submitted = false
     document.querySelector('button[name="submitButton"]').addEventListener('click', () => {
-      submitted = true;
-    });
+      submitted = true
+    })
 
     // Requesting Very Poor on a High/Moderate/Low scale
-    const result = await executeSurveyWorkflow(RATING_MODES.VERY_POOR, document);
+    const result = await executeSurveyWorkflow(RATING_MODES.VERY_POOR, document)
 
-    expect(result.success).toBe(false);
-    expect(result.statusCode).toBe(STATUS_CODES.PARTIAL_MAPPING);
-    expect(submitted).toBe(false); // Safeguard: must NOT submit partial/unmapped
-  });
+    expect(result.success).toBe(false)
+    expect(result.statusCode).toBe(STATUS_CODES.PARTIAL_MAPPING)
+    expect(submitted).toBe(false) // Safeguard: must NOT submit partial/unmapped
+  })
 
   it('safeguard: prevents submission if survey has already been completed', async () => {
     document.body.innerHTML = `
@@ -194,18 +194,18 @@ describe('surveyEngine - Full workflow and safeguards', () => {
       <form>
         <button name="submitButton">Submit</button>
       </form>
-    `;
+    `
 
-    const result = await executeSurveyWorkflow(RATING_MODES.EXCELLENT, document);
-    expect(result.success).toBe(false);
-    expect(result.statusCode).toBe(STATUS_CODES.ALREADY_SUBMITTED);
-  });
+    const result = await executeSurveyWorkflow(RATING_MODES.EXCELLENT, document)
+    expect(result.success).toBe(false)
+    expect(result.statusCode).toBe(STATUS_CODES.ALREADY_SUBMITTED)
+  })
 
   it('safeguard: reports NO_QUESTIONS when no questions are present on the page', async () => {
-    document.body.innerHTML = `<div>Welcome to Etlab Student Portal</div>`;
+    document.body.innerHTML = `<div>Welcome to Etlab Student Portal</div>`
 
-    const result = await executeSurveyWorkflow(RATING_MODES.EXCELLENT, document);
-    expect(result.success).toBe(false);
-    expect(result.statusCode).toBe(STATUS_CODES.NO_QUESTIONS);
-  });
-});
+    const result = await executeSurveyWorkflow(RATING_MODES.EXCELLENT, document)
+    expect(result.success).toBe(false)
+    expect(result.statusCode).toBe(STATUS_CODES.NO_QUESTIONS)
+  })
+})

@@ -11,12 +11,12 @@
 // @run-at       document-idle
 // ==/UserScript==
 
-(function () {
-  'use strict';
+;(function () {
+  'use strict'
 
   // Floating mobile quick-action bar
-  const container = document.createElement('div');
-  container.id = 'etlab-auto-survey-bar';
+  const container = document.createElement('div')
+  container.id = 'etlab-auto-survey-bar'
   container.innerHTML = `
     <style>
       #etlab-auto-survey-bar {
@@ -85,100 +85,123 @@
       <button class="eas-btn random" data-mode="random">Random</button>
     </div>
     <div class="eas-status" id="eas-status-msg">Tap a rating to fill & submit immediately</div>
-  `;
+  `
 
-  document.body.appendChild(container);
+  document.body.appendChild(container)
 
-  const statusEl = document.getElementById('eas-status-msg');
+  const statusEl = document.getElementById('eas-status-msg')
 
   function normalize(str) {
-    return (str || '').toLowerCase().replace(/[^a-z0-9]/g, ' ').replace(/\s+/g, ' ').trim();
+    return (str || '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
   }
 
   const synonyms = {
     excellent: ['excellent', 'outstanding', 'strongly agree', 'high', 'highest', '5', '10'],
     very_good: ['very good', 'very well', 'agree', '4', '8', 'satisfied'],
     good: ['good', 'fairly good', 'moderately agree', '3', '7', 'somewhat agree'],
-    average: ['average', 'moderate', 'neutral', 'satisfactory', 'undecided', 'fair', 'sometimes', '3', '5'],
+    average: [
+      'average',
+      'moderate',
+      'neutral',
+      'satisfactory',
+      'undecided',
+      'fair',
+      'sometimes',
+      '3',
+      '5',
+    ],
     poor: ['poor', 'disagree', 'below average', 'low', '2', '4', 'dissatisfied'],
     very_poor: ['very poor', 'strongly disagree', 'lowest', 'never', '1', 'unacceptable'],
-  };
+  }
 
   function executeSurvey(mode) {
-    statusEl.textContent = 'Processing survey...';
+    statusEl.textContent = 'Processing survey...'
 
-    const listItems = document.querySelectorAll('li');
-    let answered = 0;
-    let failed = false;
+    const listItems = document.querySelectorAll('li')
+    let answered = 0
+    let failed = false
 
-    listItems.forEach(li => {
-      const qEl = li.querySelector('.question');
-      if (!qEl) return;
-      const ansEl = li.querySelector('.answer') || li;
+    listItems.forEach((li) => {
+      const qEl = li.querySelector('.question')
+      if (!qEl) return
+      const ansEl = li.querySelector('.answer') || li
 
       // Handle Radios
-      const radios = Array.from(ansEl.querySelectorAll('input[type="radio"]:not([disabled])'));
+      const radios = Array.from(ansEl.querySelectorAll('input[type="radio"]:not([disabled])'))
       if (radios.length > 0) {
-        let chosen = null;
+        let chosen = null
         if (mode === 'random') {
-          chosen = radios[Math.floor(Math.random() * radios.length)];
+          chosen = radios[Math.floor(Math.random() * radios.length)]
         } else {
-          const list = synonyms[mode] || [mode];
+          const list = synonyms[mode] || [mode]
           for (const syn of list) {
             for (const r of radios) {
-              const label = r.closest('label') ? r.closest('label').textContent : (r.nextSibling ? r.nextSibling.textContent : r.value);
+              const label = r.closest('label')
+                ? r.closest('label').textContent
+                : r.nextSibling
+                ? r.nextSibling.textContent
+                : r.value
               if (normalize(label).includes(syn)) {
-                chosen = r;
-                break;
+                chosen = r
+                break
               }
             }
-            if (chosen) break;
+            if (chosen) break
           }
         }
 
         if (chosen) {
-          chosen.click();
-          chosen.checked = true;
-          chosen.dispatchEvent(new Event('change', { bubbles: true }));
-          answered++;
+          chosen.click()
+          chosen.checked = true
+          chosen.dispatchEvent(new Event('change', { bubbles: true }))
+          answered++
         } else {
-          failed = true;
+          failed = true
         }
       }
 
       // Handle Textarea
-      const ta = ansEl.querySelector('textarea');
+      const ta = ansEl.querySelector('textarea')
       if (ta) {
         if (qEl.textContent.toLowerCase().includes('age')) {
-          ta.value = Math.floor(Math.random() * 5) + 20;
+          ta.value = Math.floor(Math.random() * 5) + 20
         } else {
-          ta.value = 'Nothing';
+          ta.value = 'Nothing'
         }
-        ta.dispatchEvent(new Event('input', { bubbles: true }));
-        ta.dispatchEvent(new Event('change', { bubbles: true }));
+        ta.dispatchEvent(new Event('input', { bubbles: true }))
+        ta.dispatchEvent(new Event('change', { bubbles: true }))
       }
-    });
+    })
 
     if (failed && mode !== 'random') {
-      statusEl.textContent = 'Some questions could not be mapped. Survey was not submitted.';
-      return;
+      statusEl.textContent = 'Some questions could not be mapped. Survey was not submitted.'
+      return
     }
 
-    statusEl.textContent = 'Responses selected. Submitting survey...';
+    statusEl.textContent = 'Responses selected. Submitting survey...'
 
     // Submit safeguard
-    const submitBtn = document.querySelector('button[name="submitButton"], button[type="submit"], input[type="submit"]');
-    if (submitBtn && !/cancel|reset|logout|back/i.test(submitBtn.name || submitBtn.textContent || '')) {
-      submitBtn.click();
-      statusEl.textContent = 'Survey submitted successfully.';
+    const submitBtn = document.querySelector(
+      'button[name="submitButton"], button[type="submit"], input[type="submit"]',
+    )
+    if (
+      submitBtn &&
+      !/cancel|reset|logout|back/i.test(submitBtn.name || submitBtn.textContent || '')
+    ) {
+      submitBtn.click()
+      statusEl.textContent = 'Survey submitted successfully.'
     } else {
-      statusEl.textContent = 'Survey Submit button could not be identified safely.';
+      statusEl.textContent = 'Survey Submit button could not be identified safely.'
     }
   }
 
-  container.querySelectorAll('.eas-btn').forEach(btn => {
+  container.querySelectorAll('.eas-btn').forEach((btn) => {
     btn.addEventListener('click', () => {
-      executeSurvey(btn.getAttribute('data-mode'));
-    });
-  });
-})();
+      executeSurvey(btn.getAttribute('data-mode'))
+    })
+  })
+})()

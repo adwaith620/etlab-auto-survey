@@ -1,177 +1,211 @@
 # ETLAB Auto Survey — Cross-Browser Edition
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+Desktop browser extension for automating ETLAB surveys with seven rating modes and automatic form submission.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-2.0.0-green.svg)](package.json)
 [![Tests](https://img.shields.io/badge/tests-54%20passed-brightgreen.svg)](test)
-
-A polished, cross-browser extension and automation tool for completing institutional **ETLAB** faculty, course, and institutional evaluations instantly with selectable ratings, semantic option mapping, and verified automatic submission.
-
-Originally created by [Vivek K J](https://github.com/vivekkj123/etlab-auto-survey) (`@vivekkj123/etlab-auto-survey`), extended into a cross-browser, immediate-action edition.
+[![Release](https://img.shields.io/badge/release-v2.0.0-blue.svg)](https://github.com/adwaith620/etlab-auto-survey/releases)
 
 ---
 
-## Key Features
-
-- **7 Selectable Rating Modes**:
-  1. **Excellent** (Default)
-  2. **Very Good**
-  3. **Good**
-  4. **Average**
-  5. **Poor**
-  6. **Very Poor**
-  7. **Random** (selects randomly among valid available options)
-- **Immediate-Action Execution**:
-  - One-click authorization: Clicking any rating option executes the complete workflow immediately.
-  - **No intermediate confirmation dialogs, no separate "Fill" or "Apply" buttons.**
-- **Intelligent Semantic Rating Mapping**:
-  - Normalizes answer labels (handles punctuation, leading numbers like `1.`, `(A)`, whitespace, and case).
-  - Never assumes the first radio button is "Excellent" or "Good".
-  - Understands 6-point, 5-point, 4-point, 3-point, Likert agreement scales, and numeric scales.
-  - Skips hidden, disabled, or invalid controls.
-- **Robust Automatic Submission & Safeguards**:
-  - Verifies all questions were answered before submitting.
-  - **Never submits partially completed surveys**: If a rating cannot be mapped reliably, submission is aborted and an issue is reported.
-  - Authenticates submit buttons (`name="submitButton"`, `type="submit"`) while strictly rejecting dangerous buttons (`Cancel`, `Reset`, `Logout`, `Save Draft`, `Back`).
-  - Guards against concurrent/duplicate submissions.
-  - Detects if a survey was already completed or submitted.
-- **Cross-Browser Compatibility**:
-  - **Google Chrome**, **Microsoft Edge**, **Opera**, and **Mozilla Firefox**.
-  - Dynamic Manifest V3 architecture with Gecko-specific background script support.
-- **Persistent Preferences**:
-  - Persists the selected rating mode across popup closures and browser restarts.
-- **Mobile Compatibility & Userscript**:
-  - Support for Chromium Android browsers (Kiwi Browser, Lemur) and Firefox for Android.
-  - Includes a dedicated Userscript (`userscript/etlab-auto-survey.user.js`) for mobile environments where extensions cannot be sideloaded.
+> [!WARNING]
+>
+> ### ⚠️ IMPORTANT NOTICE: PC / DESKTOP ONLY
+>
+> **This browser extension is strictly intended for PC / desktop and laptop web browsers.**
+>
+> It is **not supported** on Android mobile devices, iPhones, iPads, tablets, or standard mobile browser applications. Do not attempt to install these browser extension archives on mobile devices. A compatible desktop browser running on Windows, macOS, or Linux is required.
+>
+> _(For users who cannot run desktop extensions, an optional Userscript alternative is provided for userscript managers; see the [Optional Userscript Alternative](#optional-userscript-alternative) section below)._
 
 ---
 
-## Architecture & Workflow Trace
+## Overview
 
-```
-[User Clicks Rating Button (e.g. Excellent)]
-                  │
-                  ▼
-   1. Persist mode to browser.storage
-   2. Validate active tab (verify *.etlab.in survey URL)
-   3. Content script scans DOM for questions & options
-   4. Normalize option labels and map semantic mode
-   5. Select verified controls & fill textareas (age / suggestions)
-   6. Verify that all selections were applied
-   7. Identify authentic Submit button (reject cancel/reset/logout)
-   8. Automatically submit survey
-   9. Report verified status back to popup
-```
+At the conclusion of academic semesters, engineering and arts college students using the **ETLAB Academic Management System** are required to submit extensive faculty, course, and institutional feedback surveys before accessing attendance records or examination results.
+
+**ETLAB Auto Survey** automates this repetitive process on desktop browsers with a single click. When you click any of the 7 available rating options, the extension detects the survey questions, semantically matches the requested rating scale, verifies that selections were applied, and immediately submits the survey.
+
+Originally created by [Vivek K J](https://github.com/vivekkj123/etlab-auto-survey) (`@vivekkj123/etlab-auto-survey`), this enhanced edition adds cross-browser support, semantic rating mapping, robust submission safeguards, and immediate execution.
 
 ---
 
-## Installation & Browser Setup
+## Features
 
-### 1. Google Chrome
-1. Download or clone this repository.
-2. Run `npm install && npm run build` (or `npm run build:chrome`).
-3. Open Chrome and navigate to `chrome://extensions`.
-4. Toggle **Developer mode** in the top-right corner.
-5. Click **Load unpacked** and select the `build` directory.
-6. Navigate to your college's Etlab survey page and click the extension icon.
+### 1. Seven Selectable Rating Modes
 
-### 2. Microsoft Edge
-1. Build the extension via `npm run build`.
-2. Open Edge and navigate to `edge://extensions`.
-3. Enable **Developer mode** in the left sidebar.
-4. Click **Load unpacked** and select the `build` directory.
+Every rating option executes the complete workflow immediately upon selection:
 
-### 3. Opera / Opera GX
-1. Build the extension via `npm run build`.
-2. Open Opera and navigate to `opera://extensions`.
-3. Enable **Developer mode** in the top-right corner.
-4. Click **Load unpacked** and select the `build` directory.
+1. **Excellent**: Selects the highest positive rating (e.g. _Excellent_, _Outstanding_, _Strongly Agree_, score `5` or `10`).
+2. **Very Good**: Selects high positive rating (e.g. _Very Good_, _Agree_, score `4` or `8`).
+3. **Good**: Selects standard positive rating (e.g. _Good_, _Moderately Agree_, score `3` or `7`).
+4. **Average**: Selects neutral / satisfactory rating (e.g. _Average_, _Neutral_, _Satisfactory_, _Fair_, score `3` or `5`).
+5. **Poor**: Selects low rating (e.g. _Poor_, _Disagree_, _Below Average_, score `2` or `4`).
+6. **Very Poor**: Selects lowest rating (e.g. _Very Poor_, _Strongly Disagree_, _Lowest_, score `1`).
+7. **Random**: Randomly selects among valid, enabled options for each question.
 
-### 4. Mozilla Firefox
-1. Build the Firefox-specific bundle via `npm run build:firefox` (generates `build-firefox/` and `package/etlab-auto-survey-firefox-v2.0.0.zip`).
-2. Open Firefox and navigate to `about:debugging#/runtime/this-firefox`.
-3. Click **Load Temporary Add-on...**.
-4. Select `build-firefox/manifest.json`.
+> [!IMPORTANT] > **Immediate Execution**: Clicking any rating option initiates immediate survey filling and automatic submission. **There is no secondary confirmation step, "Fill" button, or "Apply" prompt.** Select your desired rating carefully.
 
----
+### 2. Semantic Rating Mapping
 
-## Mobile Compatibility Assessment
+- Normalizes label text by removing numbering prefixes (`1.`, `2)`, `(A)`), trailing score parentheses (`(5)`), and extraneous whitespace.
+- Never blindly assumes the first radio button is "Good" or "Excellent" (safely handling reversed or inverted rating scales).
+- Adapts to 6-point, 5-point, 4-point, 3-point, Likert agreement scales, and numeric scales.
+- Skips disabled, hidden, and `aria-hidden` form controls.
 
-| Platform / Browser | Support Status | Method | Notes |
-| :--- | :--- | :--- | :--- |
-| **Kiwi Browser (Android)** | Fully Supported | Load Unpacked / Zip | Full Chromium extension API and popup support. |
-| **Lemur Browser (Android)** | Fully Supported | Load Unpacked / Zip | Supports desktop Chrome extensions directly. |
-| **Firefox for Android** | Supported via Add-on Collection | WebExtensions (MV3) | Requires Firefox Nightly / Beta custom add-on collection. |
-| **Chrome for Android** | Extension Not Supported | Userscript Alternative | Google Chrome for Android does not support browser extensions. Use the provided Userscript (`userscript/etlab-auto-survey.user.js`) via Tampermonkey/AdGuard. |
-| **iOS Safari** | Restricted | Userscript Alternative | Sideloading unpacked extensions is restricted by Apple. Use Userscripts extension or Orion Browser with the userscript. |
+### 3. Automatic Submission & Safety Safeguards
 
-### Using the Userscript Alternative
-Install `userscript/etlab-auto-survey.user.js` in Tampermonkey, Violentmonkey, or the Userscripts extension on iOS/Android to get a floating quick-action survey toolbar directly on Etlab pages.
+- **No Partial Submissions**: If a question cannot be mapped reliably to the requested rating mode, submission is aborted and an issue is reported in the popup.
+- **Submit Target Authentication**: Discovers authentic submit targets (`button[name="submitButton"]`, `button[type="submit"]`, `input[type="submit"]`).
+- **Disallowed Button Protection**: Strictly ignores and never clicks unrelated controls (`Cancel`, `Reset`, `Clear`, `Logout`, `Sign out`, `Back`, `Save Draft`).
+- **Duplicate Protection**: Concurrency locks prevent duplicate submissions from repeated clicks or duplicate events.
+- **Pre-submission Detection**: Detects if the survey was already completed or submitted.
+- **Verification**: Checks for client-side validation errors before reporting success.
 
 ---
 
-## Permissions & Purposes
+## Downloads
 
-| Permission | Purpose |
-| :--- | :--- |
-| `activeTab` | Grants temporary access to the active survey tab when the user clicks the extension popup. |
-| `storage` | Persists user rating preferences (e.g., Default Rating Mode) across sessions and restarts. |
-| `tabs` | Validates the URL of the active tab to confirm an Etlab survey is loaded before execution. |
-| `*://*.etlab.in/*` | Restricts content script execution strictly to verified institutional Etlab domains. |
+Official release packages are published on [GitHub Releases](https://github.com/adwaith620/etlab-auto-survey/releases/tag/v2.0.0). Download the archive corresponding to your desktop browser:
+
+| Browser              | Package Name                           | Direct Download                                                                                                           |
+| :------------------- | :------------------------------------- | :------------------------------------------------------------------------------------------------------------------------ |
+| **Google Chrome**    | `etlab-auto-survey-chrome-v2.0.0.zip`  | [Download](https://github.com/adwaith620/etlab-auto-survey/releases/download/v2.0.0/etlab-auto-survey-chrome-v2.0.0.zip)  |
+| **Microsoft Edge**   | `etlab-auto-survey-edge-v2.0.0.zip`    | [Download](https://github.com/adwaith620/etlab-auto-survey/releases/download/v2.0.0/etlab-auto-survey-edge-v2.0.0.zip)    |
+| **Opera / Opera GX** | `etlab-auto-survey-opera-v2.0.0.zip`   | [Download](https://github.com/adwaith620/etlab-auto-survey/releases/download/v2.0.0/etlab-auto-survey-opera-v2.0.0.zip)   |
+| **Mozilla Firefox**  | `etlab-auto-survey-firefox-v2.0.0.zip` | [Download](https://github.com/adwaith620/etlab-auto-survey/releases/download/v2.0.0/etlab-auto-survey-firefox-v2.0.0.zip) |
+
+_Always extract the downloaded ZIP file into a folder before loading._
 
 ---
 
-## Development & Testing
+## Step-by-Step Installation Instructions
+
+### Google Chrome (Desktop)
+
+1. Download [`etlab-auto-survey-chrome-v2.0.0.zip`](https://github.com/adwaith620/etlab-auto-survey/releases/download/v2.0.0/etlab-auto-survey-chrome-v2.0.0.zip) and extract it to a folder on your computer.
+2. In Chrome, open a new tab and navigate to `chrome://extensions`.
+3. In the top-right corner, turn on the **Developer mode** toggle.
+4. Click the **Load unpacked** button in the top-left toolbar.
+5. Select the extracted folder containing `manifest.json`.
+6. Verify that **ETLAB Auto Survey — Cross-Browser Edition** appears in your extensions list without errors.
+
+### Microsoft Edge (Desktop)
+
+1. Download [`etlab-auto-survey-edge-v2.0.0.zip`](https://github.com/adwaith620/etlab-auto-survey/releases/download/v2.0.0/etlab-auto-survey-edge-v2.0.0.zip) and extract it to a folder.
+2. In Edge, open a new tab and navigate to `edge://extensions`.
+3. In the left sidebar, turn on the **Developer mode** toggle.
+4. Click the **Load unpacked** button.
+5. Select the extracted folder containing `manifest.json`.
+6. Confirm that the extension is active and enabled.
+
+### Opera / Opera GX (Desktop)
+
+1. Download [`etlab-auto-survey-opera-v2.0.0.zip`](https://github.com/adwaith620/etlab-auto-survey/releases/download/v2.0.0/etlab-auto-survey-opera-v2.0.0.zip) and extract it.
+2. In Opera, open a new tab and navigate to `opera://extensions`.
+3. In the top-right corner, turn on **Developer mode**.
+4. Click **Load unpacked**.
+5. Select the extracted folder containing `manifest.json`.
+6. Verify that the extension loads successfully.
+
+### Mozilla Firefox (Desktop)
+
+1. Download [`etlab-auto-survey-firefox-v2.0.0.zip`](https://github.com/adwaith620/etlab-auto-survey/releases/download/v2.0.0/etlab-auto-survey-firefox-v2.0.0.zip) and extract it.
+2. In Firefox, open a new tab and navigate to `about:debugging#/runtime/this-firefox`.
+3. Under the **Temporary Extensions** section, click **Load Temporary Add-on...**.
+4. Navigate into the extracted folder and select the `manifest.json` file.
+5. Confirm that **ETLAB Auto Survey — Cross-Browser Edition** appears under Temporary Extensions.
+
+> [!NOTE] > **Temporary vs. Permanent Firefox Installation**: Unpacked extensions loaded via `about:debugging` remain active for your current Firefox session and are unloaded when Firefox restarts. Under Mozilla's extension signing policy, permanent installation in release Firefox builds requires packaged extensions to be signed via Mozilla Add-ons (AMO). For persistent developer installations across restarts, use Firefox Developer Edition or Firefox Nightly with `xpinstall.signatures.required` disabled in `about:config`.
+
+---
+
+## How to Use
+
+1. **Sign in to ETLAB**: Open your institutional ETLAB portal (e.g. `https://college.etlab.in`) in your desktop browser and log in with your student credentials.
+2. **Navigate to the Survey**: Go to the active survey or evaluation page (e.g. `https://college.etlab.in/survey/user/answer?id=...`).
+3. **Open the Extension**: Click the ETLAB Auto Survey icon in your browser toolbar.
+4. **Choose a Rating**: Click one of the 7 rating buttons:
+   - _Excellent_
+   - _Very Good_
+   - _Good_
+   - _Average_
+   - _Poor_
+   - _Very Poor_
+   - _Random_
+5. **Immediate Automated Execution**: The extension immediately selects the corresponding answers, populates standard text responses (e.g., student age and improvement observations), verifies the selections, and submits the form.
+6. **Review Status**: The popup displays real-time execution feedback:
+   - `Processing survey...`
+   - `Responses selected. Submitting survey...`
+   - `Survey submitted successfully.`
+
+---
+
+## Troubleshooting
+
+| Issue                                                               | Cause                                                                            | Solution                                                                                                                                                                   |
+| :------------------------------------------------------------------ | :------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **"Unsupported page. Open an Etlab survey first."**                 | The active tab is not an ETLAB survey URL.                                       | Navigate to an ETLAB survey URL matching `*.etlab.in/survey/*` or `*.etlab.in/feedback/*` before opening the popup.                                                        |
+| **"Manifest file is missing or unreadable"**                        | You selected the parent folder instead of the folder containing `manifest.json`. | Extract the ZIP completely and ensure you select the root folder that directly contains `manifest.json`.                                                                   |
+| **"Some questions could not be mapped. Survey was not submitted."** | The survey scale does not contain an equivalent option for the selected rating.  | The extension's safeguard prevented a partial submission. Choose a different rating that matches the survey scale (e.g. _Good_ instead of _Very Poor_ on a 3-point scale). |
+| **"Survey appears to have already been submitted."**                | The survey was already completed or the form controls are read-only.             | No further action is required; your responses were already recorded by ETLAB.                                                                                              |
+| **"Survey Submit button could not be identified safely."**          | The submit button does not match standard ETLAB naming patterns.                 | The extension safely aborted to avoid clicking unrelated controls. Complete and submit the survey manually.                                                                |
+| **Extension icon not visible in toolbar**                           | The browser pinned state is disabled.                                            | Click the puzzle piece / Extensions icon in your browser toolbar and pin ETLAB Auto Survey.                                                                                |
+
+---
+
+## Privacy & Permissions
+
+ETLAB Auto Survey requests only the minimal permissions necessary to operate:
+
+- **`activeTab`**: Used only when you click the extension popup to interact with the current ETLAB tab.
+- **`storage`**: Stores your preferred default rating mode locally in your browser across sessions.
+- **`tabs`**: Checks the URL of the active tab to confirm an ETLAB survey is loaded before executing.
+- **`*://*.etlab.in/*`**: Restricts content script execution strictly to verified ETLAB institutional domains.
+
+**Zero Data Collection**: This extension does not track you, does not include analytics or telemetry, does not transmit personal data, and does not communicate with external servers. All operations occur strictly locally within your browser.
+
+---
+
+## Technical Verification & Testing
+
+The extension's business logic, semantic rating mapper, submitter safeguards, and popup UI are verified by **54 automated unit & integration tests** executed with Vitest and JSDOM:
+
+- Label normalization, punctuation stripping, and numbering prefix removal.
+- All seven rating modes across 6-point, 5-point, 4-point, 3-point, Likert, and numeric scales.
+- Random selection among valid, enabled options.
+- Prevention of partial or silent submissions when options are missing.
+- Verification that disabled and hidden controls are skipped.
+- Safe submit button identification and strict rejection of disallowed buttons (`Cancel`, `Reset`, `Logout`).
+- Prevention of duplicate and concurrent submissions.
+- Browser storage persistence and in-memory fallbacks.
+- Immediate execution without secondary prompts.
 
 ```shell
-# Clone the repository
-git clone https://github.com/vivekkj123/etlab-auto-survey.git
-cd etlab-auto-survey
-
-# Install dependencies
-npm install
-
-# Run automated unit and integration tests
+# Run automated tests
 npm test
 
-# Build for Chrome, Edge, and Opera
-npm run build:chrome
-
-# Build for Firefox
-npm run build:firefox
-
-# Build for all supported browsers simultaneously
+# Build packages for all supported browsers
 npm run build:all
 ```
 
----
-
-## Test Coverage
-
-The test suite contains **54 automated unit & integration tests** covering:
-- Semantic label normalization and punctuation handling.
-- Every fixed rating mode (Excellent, Very Good, Good, Average, Poor, Very Poor).
-- Random selection among valid, enabled controls.
-- Prevention of silent guessing when ratings cannot be mapped reliably.
-- Multi-scale support (6-point, 5-point, 4-point, 3-point, Likert, numeric).
-- Disabled and hidden control exclusion.
-- Submitter safeguard verification (disallowed button rejection, duplicate prevention).
-- SurveyEngine end-to-end simulation.
-- React Popup UI immediate one-click execution and accessibility.
-- Cross-browser storage abstraction and memory fallback.
+> [!NOTE] > **Live ETLAB Submission Note**: Tests use simulated ETLAB DOM structures and an interactive mock fixture (`pages/page.html`). Live submissions on production ETLAB portals were not tested with fake student responses, as real institutional survey submissions are irreversible.
 
 ---
 
-## Known Limitations
+## Optional Userscript Alternative
 
-1. **Non-Standard Survey Forms**: If an Etlab institution injects custom CAPTCHA verification prior to submission, the extension will populate the responses and wait for manual CAPTCHA entry.
-2. **First-5 Questions in Student Satisfaction Survey**: On institutional surveys titled "Student Satisfaction Survey", the first five demographic questions (e.g. personal student information) are left for manual completion as per Etlab institutional guidelines.
-3. **Network Latency & Server Errors**: If the Etlab server encounters an internal error (500) during form processing, the extension surfaces an accurate status message instructing the user to review the survey manually.
+For environments where browser extensions cannot be installed (such as mobile browsers with userscript support), an optional standalone userscript is provided at [`userscript/etlab-auto-survey.user.js`](userscript/etlab-auto-survey.user.js).
+
+- Requires a userscript manager such as [Tampermonkey](https://www.tampermonkey.net/) or [Violentmonkey](https://violentmonkey.github.io/).
+- Adds a floating mobile-friendly action bar directly to ETLAB pages.
+- Note: This userscript is an independent alternative and is completely separate from the desktop browser extension packages.
 
 ---
 
-## License & Attribution
+## Upstream Attribution & License
 
-This project is open-source software licensed under the [MIT License](LICENSE).
-
-- **Original Author**: [Vivek K J](https://github.com/vivekkj123)
-- **Contributors**: AlertHub Developer, Antigravity
+- **Original Project**: [etlab-auto-survey](https://github.com/vivekkj123/etlab-auto-survey) by [Vivek K J](https://github.com/vivekkj123)
+- **Fork / Target Repository**: [adwaith620/etlab-auto-survey](https://github.com/adwaith620/etlab-auto-survey)
+- **License**: [MIT License](LICENSE)

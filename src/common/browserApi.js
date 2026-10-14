@@ -7,12 +7,12 @@
 
 export function getBrowser() {
   if (typeof browser !== 'undefined' && browser.runtime) {
-    return browser;
+    return browser
   }
   if (typeof chrome !== 'undefined' && chrome.runtime) {
-    return chrome;
+    return chrome
   }
-  return null;
+  return null
 }
 
 /**
@@ -21,35 +21,35 @@ export function getBrowser() {
  * @returns {Promise<chrome.tabs.Tab|browser.tabs.Tab|null>}
  */
 export async function getActiveTab() {
-  const b = getBrowser();
+  const b = getBrowser()
   if (!b || !b.tabs) {
-    return null;
+    return null
   }
 
   // Firefox browser.tabs.query returns a Promise
   if (typeof browser !== 'undefined' && browser.tabs && browser.tabs.query) {
     try {
-      const tabs = await browser.tabs.query({ active: true, currentWindow: true });
-      return tabs && tabs.length > 0 ? tabs[0] : null;
+      const tabs = await browser.tabs.query({ active: true, currentWindow: true })
+      return tabs && tabs.length > 0 ? tabs[0] : null
     } catch {
       // Fallback to chrome callback below
     }
   }
 
   // Standard Chrome callback or Promise
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     try {
-      b.tabs.query({ active: true, currentWindow: true }, tabs => {
+      b.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         if (b.runtime && b.runtime.lastError) {
-          resolve(null);
-          return;
+          resolve(null)
+          return
         }
-        resolve(tabs && tabs.length > 0 ? tabs[0] : null);
-      });
+        resolve(tabs && tabs.length > 0 ? tabs[0] : null)
+      })
     } catch {
-      resolve(null);
+      resolve(null)
     }
-  });
+  })
 }
 
 /**
@@ -60,35 +60,35 @@ export async function getActiveTab() {
  * @returns {Promise<any>}
  */
 export async function sendMessageToTab(tabId, message) {
-  const b = getBrowser();
+  const b = getBrowser()
   if (!b || !b.tabs || !tabId) {
-    return { success: false, message: 'Tabs API not available' };
+    return { success: false, message: 'Tabs API not available' }
   }
 
   if (typeof browser !== 'undefined' && browser.tabs && browser.tabs.sendMessage) {
     try {
-      return await browser.tabs.sendMessage(tabId, message);
+      return await browser.tabs.sendMessage(tabId, message)
     } catch (err) {
       // fallback
     }
   }
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     try {
-      b.tabs.sendMessage(tabId, message, response => {
+      b.tabs.sendMessage(tabId, message, (response) => {
         if (b.runtime && b.runtime.lastError) {
           resolve({
             success: false,
             message: b.runtime.lastError.message || 'Failed to communicate with tab content script',
-          });
-          return;
+          })
+          return
         }
-        resolve(response);
-      });
+        resolve(response)
+      })
     } catch (err) {
-      resolve({ success: false, message: err.message });
+      resolve({ success: false, message: err.message })
     }
-  });
+  })
 }
 
 /**
@@ -98,33 +98,33 @@ export async function sendMessageToTab(tabId, message) {
  * @returns {Promise<any>}
  */
 export async function sendMessageToRuntime(message) {
-  const b = getBrowser();
+  const b = getBrowser()
   if (!b || !b.runtime) {
-    return { success: false, message: 'Runtime API not available' };
+    return { success: false, message: 'Runtime API not available' }
   }
 
   if (typeof browser !== 'undefined' && browser.runtime && browser.runtime.sendMessage) {
     try {
-      return await browser.runtime.sendMessage(message);
+      return await browser.runtime.sendMessage(message)
     } catch (err) {
       // fallback
     }
   }
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     try {
-      b.runtime.sendMessage(message, response => {
+      b.runtime.sendMessage(message, (response) => {
         if (b.runtime && b.runtime.lastError) {
           resolve({
             success: false,
             message: b.runtime.lastError.message || 'Failed to send runtime message',
-          });
-          return;
+          })
+          return
         }
-        resolve(response);
-      });
+        resolve(response)
+      })
     } catch (err) {
-      resolve({ success: false, message: err.message });
+      resolve({ success: false, message: err.message })
     }
-  });
+  })
 }

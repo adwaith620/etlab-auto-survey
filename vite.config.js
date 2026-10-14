@@ -8,7 +8,8 @@ import { config } from './src/read_pages_folder.js'
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const targetBrowser = process.env.TARGET_BROWSER || 'chrome'
-  const outDir = process.env.BUILD_OUT_DIR || (targetBrowser === 'firefox' ? 'build-firefox' : 'build')
+  const outDir =
+    process.env.BUILD_OUT_DIR || (targetBrowser === 'firefox' ? 'build-firefox' : 'build')
   const manifest = getManifest(targetBrowser)
 
   return {
