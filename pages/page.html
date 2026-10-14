@@ -1,12 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ETLAB Academic Management System - Course Evaluation Survey</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px auto;
+      max-width: 800px;
+      line-height: 1.6;
+      background-color: #f4f6f9;
+      color: #333;
+    }
+    .survey-container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h2, h5 {
+      color: #1e3a8a;
+      margin-top: 0;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .question {
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    .answer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    label {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    select {
+      padding: 6px 12px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    button[name="submitButton"] {
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button[name="submitButton"]:hover {
+      background-color: #1d4ed8;
+    }
+    .alert-success {
+      display: none;
+      background: #dcfce7;
+      color: #166534;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-    page
+  <div class="survey-container">
+    <h2>Government Engineering College — ETLAB Survey</h2>
+    <h5>Faculty & Course Evaluation</h5>
+
+    <form id="surveyForm" action="javascript:void(0);" onsubmit="document.getElementById('successAlert').style.display='block'; return false;">
+      <ul>
+        <li>
+          <div class="question">1. The teacher covers the entire syllabus systematically.</div>
+          <div class="answer">
+            <label><input type="radio" name="q1" value="5"> Excellent</label>
+            <label><input type="radio" name="q1" value="4"> Very Good</label>
+            <label><input type="radio" name="q1" value="3"> Good</label>
+            <label><input type="radio" name="q1" value="2"> Average</label>
+            <label><input type="radio" name="q1" value="1"> Poor</label>
+            <label><input type="radio" name="q1" value="0"> Very Poor</label>
+          </div>
+        </li>
+
+        <li>
+          <div class="question">2. Effectiveness of teacher in explaining concepts and solving problems.</div>
+          <div class="answer">
+            <label><input type="radio" name="q2" value="5"> Excellent</label>
+            <label><input type="radio" name="q2" value="4"> Very Good</label>
+            <label><input type="radio" name="q2" value="3"> Good</label>
+            <label><input type="radio" name="q2" value="2"> Average</label>
+            <label><input type="radio" name="q2" value="1"> Poor</label>
+            <label><input type="radio" name="q2" value="0"> Very Poor</label>
+          </div>
+        </li>
+
+        <li>
+          <div class="question">3. Fairness in internal evaluation and assignments.</div>
+          <div class="answer">
+            <select name="q3">
+              <option value="">-- Select Rating --</option>
+              <option value="5">Excellent</option>
+              <option value="4">Very Good</option>
+              <option value="3">Good</option>
+              <option value="2">Average</option>
+              <option value="1">Poor</option>
+              <option value="0">Very Poor</option>
+            </select>
+          </div>
+        </li>
+
+        <li>
+          <div class="question">4. Observations, suggestions, or feedback for improvement.</div>
+          <div class="answer">
+            <textarea name="remarks" placeholder="Enter remarks or suggestions here..."></textarea>
+          </div>
+        </li>
+      </ul>
+
+      <button type="submit" name="submitButton">Submit Survey</button>
+      <div id="successAlert" class="alert-success">
+        Survey submitted successfully! Thank you for your feedback.
+      </div>
+    </form>
+  </div>
 </body>
 </html>

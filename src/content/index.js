@@ -1,89 +1,59 @@
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  var form = document.querySelector('form')
-  var listItems = document.querySelectorAll('li')
-  var selects = document.querySelectorAll('select')
+/**
+ * ETLAB Auto Survey - Content Script
+ *
+ * Runs inside Etlab survey pages. Listens for automation commands from
+ * the extension popup or background worker, executes the rating-mapping
+ * and submission workflow, and reports detailed status.
+ */
 
-  function markGood() {
-    listItems.forEach(function (listItem) {
-      var question = listItem.querySelector('.question')
-      if (question) {
-        var answerDiv = listItem.querySelector('.answer')
-        var firstRadioButton = answerDiv.querySelector('input[type="radio"]')
-        if (firstRadioButton) {
-          firstRadioButton.click()
-        }
-        handleTextarea(answerDiv, question)
-      }
-    })
-    selects.forEach(function (select) {
-      if (select.options.length > 1) {
-        select.selectedIndex = 1
-        select.dispatchEvent(new Event('change', { bubbles: true }))
-      }
-    })
-  }
+import { executeSurveyWorkflow, detectSurveyQuestions, isEtlabSurveyPage } from '../core/surveyEngine.js';
+import { isSurveyAlreadySubmitted } from '../core/submitter.js';
+import { RATING_MODES, STATUS_CODES } from '../core/constants.js';
 
-  function markRandom() {
-    listItems.forEach(function (listItem) {
-      var question = listItem.querySelector('.question')
-      if (question) {
-        var answerDiv = listItem.querySelector('.answer')
-        var inputElements = answerDiv.querySelectorAll('input[type="radio"], input[type="text"]')
-        var radioButtons = Array.from(inputElements).filter(function (inputElement) {
-          return inputElement.type === 'radio'
+// Setup message listener
+if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.onMessage) {
+  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    // 1. Status query
+    if (request.action === 'checkSurveyStatus') {
+      const isSurvey = isEtlabSurveyPage(window.location.href, document);
+      const alreadySubmitted = isSurveyAlreadySubmitted(document);
+      const questions = detectSurveyQuestions(document);
+
+      sendResponse({
+        isSurvey,
+        alreadySubmitted,
+        questionCount: questions.length,
+      });
+      return false;
+    }
+
+    // 2. Legacy action compatibility
+    let mode = request.mode;
+    if (request.action === 'markGood') {
+      mode = RATING_MODES.EXCELLENT;
+    } else if (request.action === 'markRandom') {
+      mode = RATING_MODES.RANDOM;
+    }
+
+    // 3. Main survey execution workflow
+    if (mode || request.action === 'executeSurvey') {
+      const targetMode = mode || RATING_MODES.EXCELLENT;
+
+      executeSurveyWorkflow(targetMode, document)
+        .then(result => {
+          sendResponse(result);
         })
+        .catch(err => {
+          sendResponse({
+            success: false,
+            statusCode: STATUS_CODES.ERROR,
+            message: err.message || 'Error occurred while processing survey.',
+          });
+        });
 
-        if (radioButtons.length > 0) {
-          var randomIndex = Math.floor(Math.random() * radioButtons.length)
-          radioButtons[randomIndex].click()
-        }
-
-        handleTextarea(answerDiv, question)
-      }
-    })
-    selects.forEach(function (select) {
-      if (select.options.length > 1) {
-        var randomIndex = Math.floor(Math.random() * (select.options.length - 1)) + 1
-        select.selectedIndex = randomIndex
-        select.dispatchEvent(new Event('change', { bubbles: true }))
-      }
-    })
-  }
-
-  function handleTextarea(answerDiv, question) {
-    var textarea = answerDiv.querySelector('textarea')
-    if (textarea) {
-      if (question.textContent.toLowerCase().includes('age')) {
-        var randomAge = Math.floor(Math.random() * 5) + 20
-        textarea.value = randomAge
-        textarea.dispatchEvent(new Event('input', { bubbles: true }))
-        textarea.dispatchEvent(new Event('change', { bubbles: true }))
-      } else if (
-        question.textContent.toLowerCase().includes('observation') &&
-        question.textContent.toLowerCase().includes('suggestions')
-      ) {
-        textarea.value = 'Nothing'
-        textarea.dispatchEvent(new Event('input', { bubbles: true }))
-        textarea.dispatchEvent(new Event('change', { bubbles: true }))
-      }
+      return true; // Keep message channel open for async response
     }
-  }
-  var surveyTitle = document.querySelector('h5')
 
-  if (request.action === 'markGood') {
-    markGood()
-  } else if (request.action === 'markRandom') {
-    markRandom()
-  }
-  if (surveyTitle && surveyTitle.textContent.trim() === 'Student Satisfaction Survey') {
-    alert('Please Fill first 5 Questions in this page by yourself')
-  } else {
-    var submitButton = document.querySelector('button[name="submitButton"]')
-    if (submitButton) {
-      submitButton.click()
-    } else {
-      form.submit()
-    }
-  }
-  // form.submit();
-})
+    return false;
+  });
+}
