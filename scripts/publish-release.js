@@ -2,23 +2,26 @@ import { execSync } from 'child_process'
 import fs from 'fs'
 import path from 'path'
 
-// Get token from git credential manager
-let token = ''
-try {
-  const credOutput = execSync('git credential fill', {
-    input: 'url=https://github.com\n',
-    encoding: 'utf-8',
-  })
-  const match = credOutput.match(/password=([^\r\n]+)/)
-  if (match) {
-    token = match[1].trim()
+// Secure token acquisition: Prefer environment variables GITHUB_TOKEN or GH_TOKEN
+let token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || ''
+
+if (!token) {
+  try {
+    const credOutput = execSync('git credential fill', {
+      input: 'url=https://github.com\n',
+      encoding: 'utf-8',
+    })
+    const match = credOutput.match(/password=([^\r\n]+)/)
+    if (match) {
+      token = match[1].trim()
+    }
+  } catch (e) {
+    // git credential manager not available or failed
   }
-} catch (e) {
-  console.error('Failed to get token from git credential fill:', e.message)
 }
 
 if (!token) {
-  console.error('No GitHub token found.')
+  console.error('No GitHub token found. Please set GITHUB_TOKEN or GH_TOKEN environment variable.')
   process.exit(1)
 }
 
@@ -28,14 +31,14 @@ const tag = 'v2.0.0'
 
 const releaseBody = `# ETLAB Auto Survey — Cross-Browser Desktop Edition (v2.0.0)
 
-Desktop browser extension for automating ETLAB surveys with seven rating modes and automatic form submission.
+Desktop browser extension for automating ETLAB surveys with six rating modes and automatic form submission.
 
 > ⚠️ **PC / DESKTOP ONLY**: This extension is strictly intended for desktop/laptop web browsers (Windows, macOS, Linux). It is not supported on Android phones, iPhones, tablets, or mobile browser apps.
 
 ---
 
 ### Highlights & Features
-- **7 Selectable Rating Modes**: Excellent (Default), Very Good, Good, Average, Poor, Very Poor, and Random.
+- **6 Selectable Rating Modes**: Excellent (Default), Very Good, Good, Poor, Very Poor, and Random.
 - **Immediate One-Click Execution**: Clicking any rating option immediately fills, verifies, and submits the survey with no intermediate confirmation prompts.
 - **Intelligent Semantic Mapping**: Normalizes answer labels and adapts to 6-point, 5-point, 4-point, 3-point, Likert, and numeric scales without relying on button order.
 - **Robust Submission Safeguards**: Rejects dangerous buttons (Cancel, Reset, Logout, Clear), prevents duplicate submissions, and aborts if questions cannot be mapped reliably.
