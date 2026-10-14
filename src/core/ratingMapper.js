@@ -161,7 +161,6 @@ export function mapRatingToOption(mode, options, optionsConfig = {}) {
       if (mode === RATING_MODES.EXCELLENT) targetNum = 5
       else if (mode === RATING_MODES.VERY_GOOD) targetNum = 4
       else if (mode === RATING_MODES.GOOD) targetNum = 3
-      else if (mode === RATING_MODES.AVERAGE) targetNum = 3
       else if (mode === RATING_MODES.POOR) targetNum = 2
       else if (mode === RATING_MODES.VERY_POOR) targetNum = 1
     } else if (max === 10 && min === 1) {
@@ -169,7 +168,6 @@ export function mapRatingToOption(mode, options, optionsConfig = {}) {
       if (mode === RATING_MODES.EXCELLENT) targetNum = 10
       else if (mode === RATING_MODES.VERY_GOOD) targetNum = 8
       else if (mode === RATING_MODES.GOOD) targetNum = 6
-      else if (mode === RATING_MODES.AVERAGE) targetNum = 5
       else if (mode === RATING_MODES.POOR) targetNum = 3
       else if (mode === RATING_MODES.VERY_POOR) targetNum = 1
     }

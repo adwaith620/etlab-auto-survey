@@ -72,12 +72,11 @@ describe('ratingMapper - mapRatingToOption', () => {
     { labelText: 'Very Poor', value: '1' },
   ]
 
-  it('maps all 6 fixed rating modes accurately on a 6-point scale', () => {
+  it('maps all 5 fixed rating modes accurately on a 6-point scale', () => {
     const modes = [
       { mode: RATING_MODES.EXCELLENT, expected: 'Excellent' },
       { mode: RATING_MODES.VERY_GOOD, expected: 'Very Good' },
       { mode: RATING_MODES.GOOD, expected: 'Good' },
-      { mode: RATING_MODES.AVERAGE, expected: 'Average' },
       { mode: RATING_MODES.POOR, expected: 'Poor' },
       { mode: RATING_MODES.VERY_POOR, expected: 'Very Poor' },
     ]
@@ -149,11 +148,12 @@ describe('ratingMapper - mapRatingToOption', () => {
       'Strongly Agree',
     )
     expect(mapRatingToOption(RATING_MODES.VERY_GOOD, likertOptions).option.labelText).toBe('Agree')
-    expect(mapRatingToOption(RATING_MODES.AVERAGE, likertOptions).option.labelText).toBe('Neutral')
     expect(mapRatingToOption(RATING_MODES.POOR, likertOptions).option.labelText).toBe('Disagree')
     expect(mapRatingToOption(RATING_MODES.VERY_POOR, likertOptions).option.labelText).toBe(
       'Strongly Disagree',
     )
+    // Removed/unsupported mode 'average' must safely report failure rather than guessing
+    expect(mapRatingToOption('average', likertOptions).success).toBe(false)
   })
 
   it('maps numeric scales (1 to 5) based on higher = better standard', () => {

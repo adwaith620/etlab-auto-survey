@@ -15,7 +15,6 @@ const RATING_BUTTONS = [
   { mode: RATING_MODES.EXCELLENT, colorClass: 'btn-excellent' },
   { mode: RATING_MODES.VERY_GOOD, colorClass: 'btn-very-good' },
   { mode: RATING_MODES.GOOD, colorClass: 'btn-good' },
-  { mode: RATING_MODES.AVERAGE, colorClass: 'btn-average' },
   { mode: RATING_MODES.POOR, colorClass: 'btn-poor' },
   { mode: RATING_MODES.VERY_POOR, colorClass: 'btn-very-poor' },
   { mode: RATING_MODES.RANDOM, colorClass: 'btn-random' },

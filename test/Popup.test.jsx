@@ -33,7 +33,7 @@ describe('Popup Component', () => {
     })
   })
 
-  it('renders 7 rating buttons on supported Etlab survey page with Excellent selected by default', async () => {
+  it('renders 6 rating buttons on supported Etlab survey page with Excellent selected by default', async () => {
     globalThis.chrome = {
       runtime: {},
       tabs: {
@@ -60,19 +60,14 @@ describe('Popup Component', () => {
       expect(screen.getByRole('button', { name: /^Excellent/i })).toBeDefined()
     })
 
-    const buttons = [
-      '^Excellent',
-      '^Very Good',
-      '^Good',
-      '^Average',
-      '^Poor',
-      '^Very Poor',
-      '^Random',
-    ]
+    const buttons = ['^Excellent', '^Very Good', '^Good', '^Poor', '^Very Poor', '^Random']
 
     for (const pattern of buttons) {
       expect(screen.getByRole('button', { name: new RegExp(pattern, 'i') })).toBeDefined()
     }
+
+    // Verify Average is NOT rendered
+    expect(screen.queryByRole('button', { name: /^Average/i })).toBeNull()
 
     // Excellent is selected by default
     const excellentBtn = screen.getByRole('button', { name: /^Excellent/i })
@@ -162,10 +157,10 @@ describe('Popup Component', () => {
     render(<Popup />)
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /^Average/i })).toBeDefined()
+      expect(screen.getByRole('button', { name: /^Poor/i })).toBeDefined()
     })
 
-    fireEvent.click(screen.getByRole('button', { name: /^Average/i }))
+    fireEvent.click(screen.getByRole('button', { name: /^Poor/i }))
 
     await waitFor(() => {
       expect(

@@ -147,9 +147,6 @@ body {
 .btn-good {
   border-left: 4px solid var(--color-good);
 }
-.btn-average {
-  border-left: 4px solid var(--color-average);
-}
 .btn-poor {
   border-left: 4px solid var(--color-poor);
 }

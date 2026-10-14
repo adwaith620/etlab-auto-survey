@@ -65,7 +65,6 @@
       .eas-btn.excellent { border-left: 3px solid #16a34a; }
       .eas-btn.very-good { border-left: 3px solid #059669; }
       .eas-btn.good { border-left: 3px solid #0284c7; }
-      .eas-btn.average { border-left: 3px solid #d97706; }
       .eas-btn.poor { border-left: 3px solid #ea580c; }
       .eas-btn.very-poor { border-left: 3px solid #dc2626; }
       .eas-btn.random { border-left: 3px solid #7c3aed; }
@@ -79,7 +78,6 @@
       <button class="eas-btn excellent" data-mode="excellent">Excellent</button>
       <button class="eas-btn very-good" data-mode="very_good">Very Good</button>
       <button class="eas-btn good" data-mode="good">Good</button>
-      <button class="eas-btn average" data-mode="average">Average</button>
       <button class="eas-btn poor" data-mode="poor">Poor</button>
       <button class="eas-btn very-poor" data-mode="very_poor">Very Poor</button>
       <button class="eas-btn random" data-mode="random">Random</button>
@@ -103,17 +101,6 @@
     excellent: ['excellent', 'outstanding', 'strongly agree', 'high', 'highest', '5', '10'],
     very_good: ['very good', 'very well', 'agree', '4', '8', 'satisfied'],
     good: ['good', 'fairly good', 'moderately agree', '3', '7', 'somewhat agree'],
-    average: [
-      'average',
-      'moderate',
-      'neutral',
-      'satisfactory',
-      'undecided',
-      'fair',
-      'sometimes',
-      '3',
-      '5',
-    ],
     poor: ['poor', 'disagree', 'below average', 'low', '2', '4', 'dissatisfied'],
     very_poor: ['very poor', 'strongly disagree', 'lowest', 'never', '1', 'unacceptable'],
   }

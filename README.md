@@ -1,6 +1,6 @@
 # ETLAB Auto Survey — Cross-Browser Edition
 
-Desktop browser extension for automating ETLAB surveys with seven rating modes and automatic form submission.
+Desktop browser extension for automating ETLAB surveys with six rating modes and automatic form submission.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-2.0.0-green.svg)](package.json)
@@ -25,7 +25,7 @@ Desktop browser extension for automating ETLAB surveys with seven rating modes a
 
 At the conclusion of academic semesters, engineering and arts college students using the **ETLAB Academic Management System** are required to submit extensive faculty, course, and institutional feedback surveys before accessing attendance records or examination results.
 
-**ETLAB Auto Survey** automates this repetitive process on desktop browsers with a single click. When you click any of the 7 available rating options, the extension detects the survey questions, semantically matches the requested rating scale, verifies that selections were applied, and immediately submits the survey.
+**ETLAB Auto Survey** automates this repetitive process on desktop browsers with a single click. When you click any of the 6 available rating options, the extension detects the survey questions, semantically matches the requested rating scale, verifies that selections were applied, and immediately submits the survey.
 
 Originally created by [Vivek K J](https://github.com/vivekkj123/etlab-auto-survey) (`@vivekkj123/etlab-auto-survey`), this enhanced edition adds cross-browser support, semantic rating mapping, robust submission safeguards, and immediate execution.
 
@@ -33,17 +33,16 @@ Originally created by [Vivek K J](https://github.com/vivekkj123/etlab-auto-surve
 
 ## Features
 
-### 1. Seven Selectable Rating Modes
+### 1. Six Selectable Rating Modes
 
 Every rating option executes the complete workflow immediately upon selection:
 
 1. **Excellent**: Selects the highest positive rating (e.g. _Excellent_, _Outstanding_, _Strongly Agree_, score `5` or `10`).
 2. **Very Good**: Selects high positive rating (e.g. _Very Good_, _Agree_, score `4` or `8`).
 3. **Good**: Selects standard positive rating (e.g. _Good_, _Moderately Agree_, score `3` or `7`).
-4. **Average**: Selects neutral / satisfactory rating (e.g. _Average_, _Neutral_, _Satisfactory_, _Fair_, score `3` or `5`).
-5. **Poor**: Selects low rating (e.g. _Poor_, _Disagree_, _Below Average_, score `2` or `4`).
-6. **Very Poor**: Selects lowest rating (e.g. _Very Poor_, _Strongly Disagree_, _Lowest_, score `1`).
-7. **Random**: Randomly selects among valid, enabled options for each question.
+4. **Poor**: Selects low rating (e.g. _Poor_, _Disagree_, _Below Average_, score `2` or `4`).
+5. **Very Poor**: Selects lowest rating (e.g. _Very Poor_, _Strongly Disagree_, _Lowest_, score `1`).
+6. **Random**: Randomly selects among valid, enabled options for each question.
 
 > [!IMPORTANT] > **Immediate Execution**: Clicking any rating option initiates immediate survey filling and automatic submission. **There is no secondary confirmation step, "Fill" button, or "Apply" prompt.** Select your desired rating carefully.
 
@@ -126,11 +125,10 @@ _Always extract the downloaded ZIP file into a folder before loading._
 1. **Sign in to ETLAB**: Open your institutional ETLAB portal (e.g. `https://college.etlab.in`) in your desktop browser and log in with your student credentials.
 2. **Navigate to the Survey**: Go to the active survey or evaluation page (e.g. `https://college.etlab.in/survey/user/answer?id=...`).
 3. **Open the Extension**: Click the ETLAB Auto Survey icon in your browser toolbar.
-4. **Choose a Rating**: Click one of the 7 rating buttons:
+4. **Choose a Rating**: Click one of the 6 rating buttons:
    - _Excellent_
    - _Very Good_
    - _Good_
-   - _Average_
    - _Poor_
    - _Very Poor_
    - _Random_
@@ -173,7 +171,7 @@ ETLAB Auto Survey requests only the minimal permissions necessary to operate:
 The extension's business logic, semantic rating mapper, submitter safeguards, and popup UI are verified by **54 automated unit & integration tests** executed with Vitest and JSDOM:
 
 - Label normalization, punctuation stripping, and numbering prefix removal.
-- All seven rating modes across 6-point, 5-point, 4-point, 3-point, Likert, and numeric scales.
+- All six rating modes across 6-point, 5-point, 4-point, 3-point, Likert, and numeric scales.
 - Random selection among valid, enabled options.
 - Prevention of partial or silent submissions when options are missing.
 - Verification that disabled and hidden controls are skipped.

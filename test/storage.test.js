@@ -57,10 +57,10 @@ describe('storage module', () => {
       },
     }
 
-    await setSelectedRatingMode(RATING_MODES.AVERAGE)
-    expect(memoryStore[STORAGE_KEY_SELECTED_MODE]).toBe(RATING_MODES.AVERAGE)
+    await setSelectedRatingMode(RATING_MODES.POOR)
+    expect(memoryStore[STORAGE_KEY_SELECTED_MODE]).toBe(RATING_MODES.POOR)
 
     const mode = await getSelectedRatingMode()
-    expect(mode).toBe(RATING_MODES.AVERAGE)
+    expect(mode).toBe(RATING_MODES.POOR)
   })
 })
